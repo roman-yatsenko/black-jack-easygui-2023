@@ -1,8 +1,13 @@
 # Блек-джек
 # Від 1 до 7 гравців проти дилера
 
+import easygui as gui
+
 import cards
 import games
+
+
+TITLE = "Блек Джек"
 
 
 class BJ_Card(cards.Positionable_Card):
@@ -72,26 +77,30 @@ class BJ_Hand(cards.Hand):
     def is_busted(self):
         return self.total > 21
 
+    def show_message(self, message):
+        gui.msgbox(str(self) + "\n" + message, TITLE)
+
 
 class BJ_Player(BJ_Hand):
     """Гравець у Блек-джек."""
 
     def is_hitting(self):
-        response = games.ask_yes_no("\n" + self.name + ", братимете ще карти")
-        return response == "y"
+        response = games.ask_yes_no(
+            str(self) + "\n" + self.name + ", братимете ще карти"
+        )
+        return response
 
     def bust(self):
-        print(self.name, "перебрав(ла).")
-        self.lose()
+        self.show_message(self.name + " перебрав(ла).")
 
     def lose(self):
-        print(self.name, "програв(ла).")
+        self.show_message(self.name + " програв(ла).")
 
     def win(self):
-        print(self.name, "виграв(ла).")
+        self.show_message(self.name + " виграв(ла).")
 
     def push(self):
-        print(self.name, "зіграв(ла) з дилером внічию.")
+        self.show_message(self.name + " зіграв(ла) з дилером внічию.")
 
 
 class BJ_Dealer(BJ_Hand):
@@ -101,7 +110,7 @@ class BJ_Dealer(BJ_Hand):
         return self.total < 17
 
     def bust(self):
-        print(self.name, "перебрав.")
+        self.show_message(self.name + " перебрав.")
 
     def flip_first_card(self):
         first_card = self.cards[0]
@@ -133,7 +142,6 @@ class BJ_Game:
     def __additional_cards(self, player):
         while not player.is_busted() and player.is_hitting():
             self.deck.deal([player])
-            print(player)
             if player.is_busted():
                 player.bust()
 
@@ -142,9 +150,8 @@ class BJ_Game:
         self.deck.deal(self.players + [self.dealer], per_hand=2)
         self.dealer.flip_first_card()
         # перша з карт, зданих дилеру, перевертається
-        for player in self.players:
-            print(player)
-        print(self.dealer)
+        message = "\n".join(str(player) for player in self.players + [self.dealer])
+        gui.msgbox(message, TITLE)
 
         # роздавання додаткових карт гравцям
         for player in self.players:
@@ -155,10 +162,9 @@ class BJ_Game:
         if not self.still_playing:
             # всі гравці перебрали,
             # покажемо лише "руку" дилера
-            print(self.dealer)
+            self.dealer.show_message(self.dealer.name + " переміг!")
         else:
             # роздача додаткових карт дилеру
-            print(self.dealer)
             self.__additional_cards(self.dealer)
 
             if self.dealer.is_busted():
@@ -166,6 +172,7 @@ class BJ_Game:
                 for player in self.still_playing:
                     player.win()
             else:
+                self.dealer.show_message(self.dealer.name + " набрав додаткові карти.")
                 # порівнюємо суми очок у дилера
                 # та у гравців, що залишилися у грі
                 for player in self.still_playing:
@@ -183,21 +190,24 @@ class BJ_Game:
 
 
 def main():
-    print("\t\tЛаскаво просимо до гри Блек-джек!\n")
+    gui.msgbox("Ласкаво просимо до гри Блек-джек!", TITLE)
 
     names = []
     number = games.ask_number("Скільки всього гравців? (1 - 7): ", low=1, high=7)
-    for i in range(number):
-        name = input("Введіть ім'я гравця № " + str(i + 1) + " :")
-        names.append(name)
-    print()
-
+    if number is None:
+        exit()
+    fields = ["Гравець " + str(i + 1) for i in range(number)]
+    names = gui.multenterbox(
+        "Введіть імена гравців", TITLE, fields=fields, values=fields
+    )
+    if names is None:
+        exit()
     game = BJ_Game(names)
 
-    again = None
-    while again != "n":
+    again = True
+    while again:
         game.play()
-        again = games.ask_yes_no("\nБажаєте зіграти ще раз")
+        again = games.ask_yes_no("Бажаєте зіграти ще раз", TITLE)
 
 
 main()
