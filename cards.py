@@ -2,6 +2,9 @@
 # Набір базових класів для гри
 
 
+import easygui as gui
+
+
 class Card:
     """Одна гральна карта."""
 
@@ -96,31 +99,31 @@ class Deck(Hand):
 
 
 if __name__ == "__main__":
-    print("Ви запустили модуль cards, " "а не імпортували його (import cards).")
-    print("Тестування модуля.\n")
+    gui.msgbox("Ви запустили модуль cards, " "а не імпортували його (import cards).")
+    gui.msgbox("Тестування модуля.\n")
 
     card1 = Card("Т", Card.SUITS[0])
     card2 = Unprintable_Card("Т", Card.SUITS[1])
     card3 = Positionable_Card("Т", Card.SUITS[2])
-    print("Об'єкт Card:", card1)
-    print("Об'єкт Unprintable_Card:", card2)
-    print("Об'єкт Positionable_Card:", card3)
+    gui.msgbox("Об'єкт Card: " + str(card1))
+    gui.msgbox("Об'єкт Unprintable_Card: " + str(card2))
+    gui.msgbox("Об'єкт Positionable_Card: " + str(card3))
     card3.flip()
-    print("Перевертаю об'єкт Positionable_Card:", card3)
+    gui.msgbox("Перевертаю об'єкт Positionable_Card: " + str(card3))
 
     deck1 = Deck()
-    print("\nСтворено нову колоду:", deck1)
+    gui.msgbox("\nСтворено нову колоду: " + str(deck1))
     deck1.populate()
-    print("У колоді з'явилися карти:", deck1, sep="\n")
+    gui.msgbox("У колоді з'явилися карти: " + str(deck1))
     deck1.shuffle()
-    print("Колода перемішана:", deck1, sep="\n")
+    gui.msgbox("Колода перемішана: " + str(deck1))
 
     hand1 = Hand()
     hand2 = Hand()
     deck1.deal(hands=(hand1, hand2), per_hand=5)
-    print("\nРоздано по 5 карт.")
-    print("Рука1:", hand1)
-    print("Рука2:", hand2)
-    print("Залишилось у колоді:", deck1, sep="\n")
+    gui.msgbox("Роздано по 5 карт.")
+    gui.msgbox("Рука1: " + str(hand1))
+    gui.msgbox("Рука2: " + str(hand2))
+    gui.msgbox("Залишилось у колоді: " + str(deck1))
     deck1.clear()
-    print("Колода очищена:", deck1)
+    gui.msgbox("Колода очищена: " + str(deck1))

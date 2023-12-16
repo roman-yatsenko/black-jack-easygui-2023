@@ -20,7 +20,6 @@ if __name__ == "__main__":
     gui.msgbox("Ви запустили модуль games, " "а не імпортували його (import games).")
     gui.msgbox("Тестування модуля.")
     answer = ask_yes_no("Продовжуємо тестування")
-    print(answer)
     gui.msgbox("Функція ask_yes_no повернула " + str(answer))
     answer = ask_number("Введіть ціле число від 1 до 10:", 1, 10)
     gui.msgbox("Функція ask_number повернула " + str(answer))
