@@ -10,6 +10,7 @@ class Card:
 
     RANKS = ["Т", "2", "3", "4", "5", "6", "7", "8", "9", "10", "В", "Д", "K"]
     SUITS = ["\u2660", "\u2663", "\u2665", "\u2666"]  # ♠ ♣ ♥ ♦
+    SUIT_LETTERS = "schd"
 
     def __init__(self, rank, suit):
         self.rank = rank
@@ -44,6 +45,16 @@ class Positionable_Card(Card):
     def flip(self):
         self.is_face_up = not self.is_face_up
 
+    @property
+    def image_filename(self):
+        if not self.is_face_up:
+            filename = "back.png"
+        else:
+            suit_name = self.SUIT_LETTERS[self.SUITS.index(self.suit)]
+            rank_name = self.RANKS.index(self.rank) + 1
+            filename = f"{suit_name}{rank_name:0>2}.png"
+        return "assets/" + filename
+
 
 class Hand:
     """Рука: набір карт на руках одного гравця."""
@@ -59,6 +70,10 @@ class Hand:
         else:
             rep = "<пусто>"
         return rep
+
+    @property
+    def card_images(self):
+        return [card.image_filename for card in self.cards]
 
     def clear(self):
         self.cards = []
